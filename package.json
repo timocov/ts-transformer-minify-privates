@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "ts-transformer-minify-privates",
+  "version": "0.0.1",
+  "description": "A TypeScript custom transformer which minify names of private class members",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timocov/ts-transformer-minify-privates.git"
+  },
+  "keywords": [
+    "typescript",
+    "transformer",
+    "minifying"
+  ],
+  "author": "Evgeniy Timokhov",
+  "license": "MIT",
+  "readme": "README.md",
+  "bugs": {
+    "url": "https://github.com/timocov/ts-transformer-minify-privates/issues"
+  },
+  "homepage": "https://github.com/timocov/ts-transformer-minify-privates#readme"
+}

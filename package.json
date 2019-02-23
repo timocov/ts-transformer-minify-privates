@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/timocov/ts-transformer-minify-privates/issues"
   },
-  "homepage": "https://github.com/timocov/ts-transformer-minify-privates#readme"
+  "homepage": "https://github.com/timocov/ts-transformer-minify-privates#readme",
+  "devDependencies": {
+    "typescript": "~3.3.3333"
+  },
+  "peerDependencies": {
+    "typescript": ">=2.4.1"
+  }
 }

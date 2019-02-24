@@ -21,9 +21,13 @@
   },
   "homepage": "https://github.com/timocov/ts-transformer-minify-privates#readme",
   "devDependencies": {
+    "@types/nanoid": "~1.2.1",
     "typescript": "~3.3.3333"
   },
   "peerDependencies": {
     "typescript": ">=2.4.1"
+  },
+  "dependencies": {
+    "nanoid": "~2.0.1"
   }
 }

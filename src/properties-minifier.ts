@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 
+// tslint:disable-next-line:no-submodule-imports
 import generate from 'nanoid/generate';
 
 export interface PropertyMinifierOptions {
@@ -46,7 +47,7 @@ export class PropertiesMinifier {
 	private visitNode(node: ts.Node, program: ts.Program): ts.Node {
 		if (isClassMember(node) && isPrivateNonStaticMember(node)) {
 			return this.createNewClassMember(node, program);
-		} else if (isAccessExpression(node)) {
+		} else if (isAccessExpression(node)) { // tslint:disable-line:unnecessary-else
 			return this.createNewAccessExpression(node, program);
 		}
 
@@ -110,7 +111,7 @@ export class PropertiesMinifier {
 			return node;
 		}
 
-		if (!symbol.declarations.some(x => isClassMember(x) && isPrivateNonStaticMember(x))) {
+		if (!symbol.declarations.some((x: ts.Declaration) => isClassMember(x) && isPrivateNonStaticMember(x))) {
 			return node;
 		}
 
@@ -173,7 +174,7 @@ export class PropertiesMinifier {
 				}
 
 				result = `${this.options.prefix}${generate('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz$_', this.currentNameLength)}`;
-			} while (this.usedNames.has(result))
+			} while (this.usedNames.has(result));
 
 			this.usedNames.add(result);
 

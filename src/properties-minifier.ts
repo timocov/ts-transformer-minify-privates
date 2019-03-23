@@ -4,8 +4,14 @@ import * as ts from 'typescript';
 import generate from 'nanoid/generate';
 
 export interface PropertyMinifierOptions {
+	/**
+	 * Prefix of generated names (to generate 100% unique names, e.g. '_' or '$')
+	 */
 	prefix: string;
 
+	/**
+	 * Enable this option to print original name after renamed one (useful for debug purposes)
+	 */
 	emitOriginalName: boolean;
 }
 

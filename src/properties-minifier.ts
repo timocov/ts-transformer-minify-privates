@@ -71,6 +71,15 @@ export class PropertiesMinifier {
 				);
 			};
 		} else {
+			// don't minify numeric private fields
+			if (ts.isNumericLiteral(oldMember.name)) {
+				return oldMember;
+			}
+
+			if (!ts.isStringLiteral(oldMember.name) && !ts.isIdentifier(oldMember.name)) {
+				throw new Error(`Cannot minify ${getClassName(oldMember.parent)}::${oldMember.name.getText()} property`);
+			}
+
 			creator = (newName: string) => {
 				return ts.createProperty(
 					oldMember.decorators,
@@ -114,9 +123,14 @@ export class PropertiesMinifier {
 				return ts.createPropertyAccess(node.expression, newName);
 			};
 		} else {
+			// don't minify numeric private fields
+			if (ts.isNumericLiteral(node.argumentExpression)) {
+				return node;
+			}
+
 			if (!ts.isStringLiteral(node.argumentExpression)) {
 				// it's access for private class' member - maybe need to warn here?
-				return node;
+				throw new Error(`Cannot minify accessing for ${node.argumentExpression.getText()} property`);
 			}
 
 			propName = node.argumentExpression;
@@ -192,4 +206,12 @@ type ClassMember = ts.MethodDeclaration | ts.PropertyDeclaration;
 
 function isClassMember(node: ts.Node): node is ClassMember {
 	return ts.isMethodDeclaration(node) || ts.isPropertyDeclaration(node);
+}
+
+function getClassName(classNode: ts.ClassLikeDeclaration): string {
+	if (classNode.name === undefined) {
+		return 'anonymous class';
+	}
+
+	return classNode.name.getText();
 }

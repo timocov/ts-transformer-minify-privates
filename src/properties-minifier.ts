@@ -18,12 +18,12 @@ const defaultOptions: PropertyMinifierOptions = {
 type NodeCreator<T extends ts.Node> = (newName: string) => T;
 
 export class PropertiesMinifier {
-	private namesCache: Map<string, string> = new Map();
-	private usedNames: Set<string> = new Set();
+	private readonly namesCache: Map<string, string> = new Map();
+	private readonly usedNames: Set<string> = new Set();
 
 	private currentNameLength: number = 1;
 
-	private options: PropertyMinifierOptions;
+	private readonly options: PropertyMinifierOptions;
 
 	public constructor(options: Partial<PropertyMinifierOptions>) {
 		this.options = { ...defaultOptions, ...options };
@@ -107,7 +107,7 @@ export class PropertiesMinifier {
 		const symbol = typeChecker.getSymbolAtLocation(accessName);
 
 		// for some reason ts.Symbol.declarations can be undefined (for example in order to accessing to proto member)
-		if (symbol === undefined || symbol.declarations === undefined) {
+		if (symbol === undefined || symbol.declarations === undefined) { // tslint:disable-line:strict-type-predicates
 			return node;
 		}
 

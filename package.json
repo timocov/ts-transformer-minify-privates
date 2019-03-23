@@ -29,5 +29,9 @@
   },
   "dependencies": {
     "nanoid": "~2.0.1"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "prepare-release": "npm run compile && node build/index.js && node build/prod-ready"
   }
 }

@@ -7,12 +7,16 @@ export interface PropertyMinifierOptions {
 	prefix: string;
 
 	emitOriginalName: boolean;
+	
+	ignoreNonMinifiableMembers: boolean;
 }
 
 const defaultOptions: PropertyMinifierOptions = {
 	prefix: '_',
 
 	emitOriginalName: false,
+	
+	ignoreNonMinifiableMembers: boolean,
 };
 
 type NodeCreator<T extends ts.Node> = (newName: string) => T;
@@ -78,6 +82,9 @@ export class PropertiesMinifier {
 			}
 
 			if (!ts.isStringLiteral(oldMember.name) && !ts.isIdentifier(oldMember.name)) {
+				if (this.options.ignoreNonMinifiableMembers) {
+					return oldMember;
+				}
 				throw new Error(`Cannot minify ${getClassName(oldMember.parent)}::${oldMember.name.getText()} property`);
 			}
 
@@ -131,6 +138,10 @@ export class PropertiesMinifier {
 
 			if (!ts.isStringLiteral(node.argumentExpression)) {
 				// it's access for private class' member - maybe need to warn here?
+				if (this.options.ignoreNonMinifiableMembers) {
+					return node;
+				}
+				
 				throw new Error(`Cannot minify accessing for ${node.argumentExpression.getText()} property`);
 			}
 

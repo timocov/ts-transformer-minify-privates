@@ -1,7 +1,7 @@
 const obj = {};
-export class FooBar {
+export class Class {
     constructor() {
-        this._private_privateField = 'sda';
+        this._private_privateField = 'string-value';
         this.publicField = 123;
         this[356] = 3;
         const that = this;

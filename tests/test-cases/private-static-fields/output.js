@@ -1,11 +1,11 @@
-export class FooBar {
+export class Class {
     constructor() {
         this.publicField = 123;
-        FooBar.privateStaticPropertyMethod();
-        FooBar.privateStaticMethod();
+        Class.privateStaticPropertyMethod();
+        Class.privateStaticMethod();
     }
     static privateStaticMethod() {
     }
 }
-FooBar.privateStaticPropertyMethod = () => {
+Class.privateStaticPropertyMethod = () => {
 };

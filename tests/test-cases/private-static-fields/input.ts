@@ -1,9 +1,9 @@
-export class FooBar {
+export class Class {
 	public publicField: number = 123;
 
 	public constructor() {
-		FooBar.privateStaticPropertyMethod();
-		FooBar.privateStaticMethod();
+		Class.privateStaticPropertyMethod();
+		Class.privateStaticMethod();
 	}
 
 	private static privateStaticMethod(): void {

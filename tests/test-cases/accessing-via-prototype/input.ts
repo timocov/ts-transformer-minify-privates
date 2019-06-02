@@ -1,10 +1,10 @@
-export class FooBar {
-	private privateField: string = 'sda';
+export class Class {
+	private privateField: string = 'string-value';
 
 	public constructor() {
-		FooBar.prototype.privateMethod.call(this, this.privateField);
+		Class.prototype.privateMethod.call(this, this.privateField);
 
-		FooBar.prototype.publicMethod.call(this);
+		Class.prototype.publicMethod.call(this);
 	}
 
 	public publicMethod(): void {

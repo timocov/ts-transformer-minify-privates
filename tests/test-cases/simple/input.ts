@@ -1,6 +1,6 @@
-export class FooBar {
+export class Class {
 	public publicField: number = 123;
-	private privateField: string = 'sda';
+	private privateField: string = 'string-value';
 
 	public constructor() {
 		this.privateMethod(this.privateField);

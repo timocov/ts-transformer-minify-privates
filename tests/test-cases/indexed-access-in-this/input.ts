@@ -1,7 +1,7 @@
 const obj: Record<string, string> = {};
 
-export class FooBar {
-	private privateField: string = 'sda';
+export class Class {
+	private privateField: string = 'string-value';
 	public publicField: number = 123;
 	private 356: number = 3;
 

@@ -79,7 +79,7 @@ describe('Functional tests', () => {
 			const program = ts.createProgram({
 				rootNames: [testCase.inputFileName],
 				options: {
-					target: ts.ScriptTarget.ES2015,
+					target: ts.ScriptTarget.ES5,
 				},
 			});
 

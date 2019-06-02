@@ -80,5 +80,6 @@ See [ttypescript's README](https://github.com/cevek/ttypescript/blob/master/READ
 1. Tests
 1. Handle or fail for accessing runtime-based properties, e.g. `this[Math.random() > .5 ? 'privateMethod' : 'privateMethod2']()`.
 1. Implement stable name generation (e.g. calc hash from name, not just random name) to increase stability and avoid changing hashes of files.
+1. Add option to choose strategy of the name generator (per file, per project, etc).
 
 ## Note

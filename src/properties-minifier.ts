@@ -8,7 +8,7 @@ export interface PropertyMinifierOptions {
 
 	emitOriginalName: boolean;
 	
-	ignoreNonMinifiableMembers: boolean;
+	ignoreNonMinifiableMembers?: boolean;
 }
 
 const defaultOptions: PropertyMinifierOptions = {
@@ -16,7 +16,7 @@ const defaultOptions: PropertyMinifierOptions = {
 
 	emitOriginalName: false,
 	
-	ignoreNonMinifiableMembers: boolean,
+	ignoreNonMinifiableMembers?: boolean,
 };
 
 type NodeCreator<T extends ts.Node> = (newName: string) => T;

@@ -1,10 +1,21 @@
 import * as ts from 'typescript';
 
+export const enum GenerateNameStrategy {
+	PrependPrefixOnly = 'prependPrefixOnly',
+	Random = 'random',
+	RandomStable = 'randomStable',
+}
+
 export interface PropertyMinifierOptions {
 	/**
 	 * Prefix of generated names (to generate 100% unique names, e.g. '_' or '$')
 	 */
 	prefix: string;
+
+	/**
+	 * Strategy of generating names
+	 */
+	strategy: GenerateNameStrategy;
 
 	/**
 	 * Enable this option to print original name after renamed one (useful for debug purposes)
@@ -14,6 +25,8 @@ export interface PropertyMinifierOptions {
 
 const defaultOptions: PropertyMinifierOptions = {
 	prefix: '_',
+
+	strategy: GenerateNameStrategy.Random,
 
 	emitOriginalName: false,
 };
@@ -164,6 +177,10 @@ export class PropertiesMinifier {
 	}
 
 	private getNewName(originalName: string): string {
+		if (this.options.strategy === GenerateNameStrategy.PrependPrefixOnly) {
+			return `${this.options.prefix}${originalName}`;
+		}
+
 		let result = this.namesCache.get(originalName);
 		if (result === undefined) {
 			result = `${this.options.prefix}${this.currentIndex++}`;

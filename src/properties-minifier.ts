@@ -1,8 +1,5 @@
 import * as ts from 'typescript';
 
-// tslint:disable-next-line:no-submodule-imports
-import generate from 'nanoid/generate';
-
 export interface PropertyMinifierOptions {
 	/**
 	 * Prefix of generated names (to generate 100% unique names, e.g. '_' or '$')
@@ -27,11 +24,11 @@ export class PropertiesMinifier {
 	private readonly namesCache: Map<string, string> = new Map();
 	private readonly usedNames: Set<string> = new Set();
 
-	private currentNameLength: number = 1;
+	private currentIndex: number = 0;
 
 	private readonly options: PropertyMinifierOptions;
 
-	public constructor(options: Partial<PropertyMinifierOptions>) {
+	public constructor(options?: Partial<PropertyMinifierOptions>) {
 		this.options = { ...defaultOptions, ...options };
 	}
 
@@ -169,21 +166,9 @@ export class PropertiesMinifier {
 	private getNewName(originalName: string): string {
 		let result = this.namesCache.get(originalName);
 		if (result === undefined) {
-			let attemptsCount = 0;
-
-			do {
-				attemptsCount += 1;
-
-				if (attemptsCount === 5) {
-					attemptsCount = 0;
-					this.currentNameLength += 1;
-				}
-
-				result = `${this.options.prefix}${generate('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz$_', this.currentNameLength)}`;
-			} while (this.usedNames.has(result));
+			result = `${this.options.prefix}${this.currentIndex++}`;
 
 			this.usedNames.add(result);
-
 			this.namesCache.set(originalName, result);
 		}
 

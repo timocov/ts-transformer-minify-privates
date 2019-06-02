@@ -34,7 +34,7 @@
     "typescript": "~3.5.1"
   },
   "scripts": {
-    "compile": "tsc",
+    "tsc": "tsc -p .",
     "lint": "tslint --config tslint.json --project tsconfig.json",
     "test": "mocha tests/functional-test-cases.ts"
   }

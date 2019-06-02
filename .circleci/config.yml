@@ -1,0 +1,85 @@
+# https://circleci.com/docs/2.0/configuration-reference
+
+version: 2.1
+
+
+aliases:
+  - &restore-node-modules-cache
+      name: Restore node_modules cache
+      keys:
+        - &cache-key v1-dependencies-{{ checksum "package.json" }}
+
+  - &save-node-modules-cache
+      name: Save node_modules cache
+      paths:
+        - node_modules
+        - tests/e2e/node_modules
+      key: *cache-key
+
+  - &default-filters
+      tags:
+        ignore:
+          - /.*/
+
+
+executors:
+  node-latest-executor:
+    docker:
+      - image: circleci/node:latest
+
+
+commands:
+  checkout-with-deps:
+    description: "Checkout the code with restore npm dependencies"
+    steps:
+      - checkout
+      - restore_cache: *restore-node-modules-cache
+
+
+jobs:
+  install-deps:
+    executor: node-latest-executor
+    steps:
+      - checkout-with-deps
+      - run: npm install
+      - save_cache: *save-node-modules-cache
+
+  build:
+    executor: node-latest-executor
+    steps:
+      - checkout-with-deps
+      - run: npm run tsc
+
+  lint:
+    executor: node-latest-executor
+    steps:
+      - checkout-with-deps
+      - run: npm run lint
+
+  test:
+    executor: node-latest-executor
+    steps:
+      - checkout-with-deps
+      - run: npm run test
+
+
+workflows:
+  version: 2
+
+  build-lint-test:
+    jobs:
+      - install-deps:
+          filters: *default-filters
+
+      - build:
+          filters: *default-filters
+          requires:
+            - install-deps
+      - lint:
+          filters: *default-filters
+          requires:
+            - install-deps
+      - test:
+          filters: *default-filters
+          requires:
+            - build

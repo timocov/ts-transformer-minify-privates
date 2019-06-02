@@ -33,7 +33,6 @@
   },
   "scripts": {
     "compile": "tsc",
-    "lint": "tslint --config tslint.json --project tsconfig.json",
-    "prepare-release": "npm run compile && npm run lint && node build/index.js && node build/prod-ready"
+    "lint": "tslint --config tslint.json --project tsconfig.json"
   }
 }

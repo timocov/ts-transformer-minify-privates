@@ -4,6 +4,7 @@ import { PropertiesMinifier } from './properties-minifier';
 
 export interface PluginConfig {
 	emitOriginalName: boolean;
+	ignoreNonMinifiableMembers?: boolean;
 }
 
 // tslint:disable-next-line:no-default-export

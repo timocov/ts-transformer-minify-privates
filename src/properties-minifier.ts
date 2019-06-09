@@ -65,6 +65,8 @@ export class PropertiesMinifier {
 			return this.createNewClassMember(node, program);
 		} else if (isAccessExpression(node)) { // tslint:disable-line:unnecessary-else
 			return this.createNewAccessExpression(node, program);
+		} else if (ts.isBindingElement(node)) { // tslint:disable-line:unnecessary-else
+			return this.createNewBindingElement(node, program);
 		}
 
 		return node;
@@ -122,12 +124,7 @@ export class PropertiesMinifier {
 		const accessName = ts.isPropertyAccessExpression(node) ? node.name : node.argumentExpression;
 		const symbol = typeChecker.getSymbolAtLocation(accessName);
 
-		// for some reason ts.Symbol.declarations can be undefined (for example in order to accessing to proto member)
-		if (symbol === undefined || symbol.declarations === undefined) { // tslint:disable-line:strict-type-predicates
-			return node;
-		}
-
-		if (!symbol.declarations.some((x: ts.Declaration) => isClassMember(x) && isPrivateNonStaticMember(x))) {
+		if (!isPrivateNonStaticClassMember(symbol)) {
 			return node;
 		}
 
@@ -151,6 +148,46 @@ export class PropertiesMinifier {
 		}
 
 		return this.createNewNode(program, propName, creator);
+	}
+
+	private createNewBindingElement(node: ts.BindingElement, program: ts.Program): ts.BindingElement {
+		const typeChecker = program.getTypeChecker();
+
+		let propName: ts.PropertyName;
+		let symbol: ts.Symbol | undefined;
+
+		if (node.propertyName === undefined) {
+			// if no property name is set (const { a } = foo)
+			// then node.propertyName is undefined and we need to find this property by yourself
+			// so let's use go-to-definition algorithm from TSServer
+			// see https://github.com/microsoft/TypeScript/blob/672b0e3e16ad18b422dbe0cec5a98fce49881b76/src/services/goToDefinition.ts#L58-L77
+			if (!ts.isObjectBindingPattern(node.parent)) {
+				return node;
+			}
+
+			const type = typeChecker.getTypeAtLocation(node.parent);
+			if (type.isUnion()) {
+				return node;
+			}
+
+			if (!ts.isIdentifier(node.name)) {
+				return node;
+			}
+
+			propName = node.name;
+			symbol = type.getProperty(ts.idText(propName));
+		} else {
+			propName = node.propertyName;
+			symbol = typeChecker.getSymbolAtLocation(node.propertyName);
+		}
+
+		if (!isPrivateNonStaticClassMember(symbol)) {
+			return node;
+		}
+
+		return this.createNewNode(program, propName, (newName: string) => {
+			return ts.createBindingElement(node.dotDotDotToken, newName, node.name, node.initializer);
+		});
 	}
 
 	private createNewNode<T extends ts.Node>(program: ts.Program, oldProperty: ts.PropertyName, createNode: NodeCreator<T>): T {
@@ -217,4 +254,13 @@ function getClassName(classNode: ts.ClassLikeDeclaration): string {
 	}
 
 	return classNode.name.getText();
+}
+
+function isPrivateNonStaticClassMember(symbol: ts.Symbol | undefined): boolean {
+	// for some reason ts.Symbol.declarations can be undefined (for example in order to accessing to proto member)
+	if (symbol === undefined || symbol.declarations === undefined) { // tslint:disable-line:strict-type-predicates
+		return false;
+	}
+
+	return symbol.declarations.some((x: ts.Declaration) => isClassMember(x) && isPrivateNonStaticMember(x));
 }

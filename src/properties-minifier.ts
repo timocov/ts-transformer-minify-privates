@@ -140,14 +140,8 @@ export class PropertiesMinifier {
 				return ts.createPropertyAccess(node.expression, newName);
 			};
 		} else {
-			// don't minify numeric private fields
-			if (ts.isNumericLiteral(node.argumentExpression)) {
-				return node;
-			}
-
 			if (!ts.isStringLiteral(node.argumentExpression)) {
-				// it's access for private class' member - maybe need to warn here?
-				throw new Error(`Cannot minify accessing for ${node.argumentExpression.getText()} property`);
+				return node;
 			}
 
 			propName = node.argumentExpression;

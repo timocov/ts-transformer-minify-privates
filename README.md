@@ -4,9 +4,21 @@
 
 A TypeScript custom transformer which minify names of private class members.
 
+For now it just renames private members with prepending some prefix to name.
+For example, if you have `privateMember`, then after transformation the name will be `_private_privateMember`.
+After that you can use terser/uglify with mangle options to minify that members.
+
 ## Requirement
 
 TypeScript >= 2.9.1
+
+## Options
+
+### prefix
+
+*Default: `_private_`*
+
+The prefix which will be added to private member's name.
 
 ## How to use the custom transformer
 

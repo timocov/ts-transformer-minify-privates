@@ -6,7 +6,7 @@ A TypeScript custom transformer which minify names of private class members.
 
 ## Requirement
 
-TypeScript >= 2.4.1
+TypeScript >= 2.9.0
 
 ## How to use the custom transformer
 

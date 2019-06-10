@@ -161,11 +161,11 @@ export class PropertiesMinifier {
 			// then node.propertyName is undefined and we need to find this property by yourself
 			// so let's use go-to-definition algorithm from TSServer
 			// see https://github.com/microsoft/TypeScript/blob/672b0e3e16ad18b422dbe0cec5a98fce49881b76/src/services/goToDefinition.ts#L58-L77
-			if (!ts.isObjectBindingPattern(node.parent)) {
+			if (!ts.isObjectBindingPattern(node.parent as ts.Node)) {
 				return node;
 			}
 
-			const type = typeChecker.getTypeAtLocation(node.parent);
+			const type = typeChecker.getTypeAtLocation(node.parent as ts.Node);
 			if (type.isUnion()) {
 				return node;
 			}

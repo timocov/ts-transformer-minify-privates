@@ -8,7 +8,8 @@ import { describe, it } from 'mocha';
 
 import * as ts from 'typescript';
 
-import { PropertiesMinifier, GenerateNameStrategy } from '../src/properties-minifier';
+import { GenerateNameStrategy } from '../src/properties-minifier';
+import minifyPrivatesTransformer from '../src/transformer';
 
 interface TestCase {
 	name: string;
@@ -70,11 +71,6 @@ function checkDiagnosticsErrors(diagnostics: ReadonlyArray<ts.Diagnostic>): void
 
 describe('Functional tests', () => {
 	for (const testCase of getTestCases()) {
-		const minifier = new PropertiesMinifier({
-			prefix: '_private_',
-			strategy: GenerateNameStrategy.PrependPrefixOnly,
-		});
-
 		it(testCase.name, () => {
 			const program = ts.createProgram({
 				rootNames: [testCase.inputFileName],
@@ -87,6 +83,15 @@ describe('Functional tests', () => {
 
 			let output: string | undefined;
 
+			const transformer = minifyPrivatesTransformer(
+				program,
+				{
+					prefix: '_private_',
+					strategy: GenerateNameStrategy.PrependPrefixOnly,
+					emitOriginalName: false,
+				}
+			);
+
 			program.emit(
 				undefined,
 				(fileName: string, data: string) => {
@@ -96,7 +101,7 @@ describe('Functional tests', () => {
 				false,
 				{
 					before: [
-						(context: ts.TransformationContext) => (file: ts.SourceFile) => minifier.visitSourceFile(file, program, context),
+						transformer,
 					],
 				}
 			);

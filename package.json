@@ -3,11 +3,14 @@
   "name": "ts-transformer-minify-privates",
   "version": "0.0.1",
   "description": "A TypeScript custom transformer which minify names of private class members",
-  "main": "transformer.js",
+  "main": "dist/transformer.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/timocov/ts-transformer-minify-privates.git"
   },
+  "files": [
+    "dist/"
+  ],
   "keywords": [
     "typescript",
     "transformer",
@@ -28,6 +31,7 @@
     "@types/mocha": "~5.2.7",
     "@types/node": "~12.0.4",
     "chai": "~4.2.0",
+    "clean-publish": "~1.1.2",
     "mocha": "~6.1.4",
     "ts-node": "~8.2.0",
     "tslint": "~5.17.0",

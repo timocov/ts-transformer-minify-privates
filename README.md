@@ -17,7 +17,7 @@ The followings are the example usage of the custom transformer.
 
 ```js
 // webpack.config.js
-const minifyPrivatesTransformer = require('ts-transformer-minify-privates/transformer').default;
+const minifyPrivatesTransformer = require('ts-transformer-minify-privates').default;
 
 module.exports = {
   // ...
@@ -45,7 +45,7 @@ module.exports = {
 ```js
 // rollup.config.js
 import typescript from 'rollup-plugin-typescript2';
-import minifyPrivatesTransformer from 'ts-transformer-minify-privates/transformer';
+import minifyPrivatesTransformer from 'ts-transformer-minify-privates';
 
 export default {
   // ...
@@ -68,7 +68,7 @@ See [ttypescript's README](https://github.com/cevek/ttypescript/blob/master/READ
   "compilerOptions": {
     // ...
     "plugins": [
-      { "transform": "ts-transformer-minify-privates/transformer" }
+      { "transform": "ts-transformer-minify-privates" }
     ]
   },
   // ...

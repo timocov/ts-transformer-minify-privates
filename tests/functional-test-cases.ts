@@ -8,7 +8,6 @@ import { describe, it } from 'mocha';
 
 import * as ts from 'typescript';
 
-import { GenerateNameStrategy } from '../src/properties-minifier';
 import minifyPrivatesTransformer from '../src/transformer';
 
 interface TestCase {
@@ -87,8 +86,6 @@ describe('Functional tests', () => {
 				program,
 				{
 					prefix: '_private_',
-					strategy: GenerateNameStrategy.PrependPrefixOnly,
-					emitOriginalName: false,
 				}
 			);
 

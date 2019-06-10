@@ -8,37 +8,18 @@ export const enum GenerateNameStrategy {
 
 export interface PropertyMinifierOptions {
 	/**
-	 * Prefix of generated names (to generate 100% unique names, e.g. '_' or '$')
+	 * Prefix of generated names (e.g. '__private__')
 	 */
 	prefix: string;
-
-	/**
-	 * Strategy of generating names
-	 */
-	strategy: GenerateNameStrategy;
-
-	/**
-	 * Enable this option to print original name after renamed one (useful for debug purposes)
-	 */
-	emitOriginalName: boolean;
 }
 
 const defaultOptions: PropertyMinifierOptions = {
-	prefix: '_',
-
-	strategy: GenerateNameStrategy.Random,
-
-	emitOriginalName: false,
+	prefix: '_private_',
 };
 
 type NodeCreator<T extends ts.Node> = (newName: string) => T;
 
 export class PropertiesMinifier {
-	private readonly namesCache: Map<string, string> = new Map();
-	private readonly usedNames: Set<string> = new Set();
-
-	private currentIndex: number = 0;
-
 	private readonly options: PropertyMinifierOptions;
 
 	public constructor(options?: Partial<PropertyMinifierOptions>) {
@@ -202,25 +183,11 @@ export class PropertiesMinifier {
 		const newPropertyName = this.getNewName(oldPropertyName);
 		const newProperty = createNode(newPropertyName);
 
-		return this.options.emitOriginalName
-			? ts.addSyntheticTrailingComment(newProperty, ts.SyntaxKind.MultiLineCommentTrivia, oldPropertyName)
-			: newProperty;
+		return newProperty;
 	}
 
 	private getNewName(originalName: string): string {
-		if (this.options.strategy === GenerateNameStrategy.PrependPrefixOnly) {
-			return `${this.options.prefix}${originalName}`;
-		}
-
-		let result = this.namesCache.get(originalName);
-		if (result === undefined) {
-			result = `${this.options.prefix}${this.currentIndex++}`;
-
-			this.usedNames.add(result);
-			this.namesCache.set(originalName, result);
-		}
-
-		return result;
+		return `${this.options.prefix}${originalName}`;
 	}
 }
 

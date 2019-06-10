@@ -32,7 +32,7 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npm install typescript@2.9.0
+      - run: npm install typescript@2.9.1
       - run: npm run tsc
       - run: npm run test
 

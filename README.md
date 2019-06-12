@@ -1,12 +1,19 @@
 # ts-transformer-minify-privates
 
-**_(CURRENTLY WORK IN PROGRESS)_**
-
 A TypeScript custom transformer which minify names of private class members.
 
 For now it just renames private members with prepending some prefix to name.
 For example, if you have `privateMember`, then after transformation the name will be `_private_privateMember`.
 After that you can use terser/uglify with mangle options to minify that members.
+
+## Caution!!!
+
+Before start using this transformer in the production, I strongly recommend you check that your code compiles successfully and all files has correct output.
+I would say **check the whole project file-by-file** and compare the input with the (expected) output.
+
+I cannot guarantee you that the transformer covers all possible cases, but it has tests for the most popular ones, and if you catch a bug - please feel free to create an issue.
+
+I've tested it for several projects and it works well.
 
 ## Requirement
 
@@ -86,3 +93,10 @@ See [ttypescript's README](https://github.com/cevek/ttypescript/blob/master/READ
   // ...
 }
 ```
+
+## Results
+
+[I've tested](https://github.com/tradingview/lightweight-charts/commit/9454d575fd1496224a2487d02baaacaf2713b64c) the transformer on [lightweight-charts](https://github.com/tradingview/lightweight-charts) and the bundle size was reduced:
+
+- on ~15% min (from 186KB to 157KB)
+- on ~5% min.gz (from 43KB to 41KB)

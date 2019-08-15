@@ -240,7 +240,7 @@ function isClassMember(node: ts.Node): node is ClassMember {
 }
 
 function isConstructorParameter(node: ts.Node): node is ts.ParameterDeclaration {
-	return ts.isParameter(node) && ts.isConstructorDeclaration(node.parent);
+	return ts.isParameter(node) && ts.isConstructorDeclaration(node.parent as ts.Node);
 }
 
 function getClassName(classNode: ts.ClassLikeDeclaration): string {

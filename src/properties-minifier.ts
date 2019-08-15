@@ -44,9 +44,9 @@ export class PropertiesMinifier {
 	private visitNode(node: ts.Node, program: ts.Program): ts.Node {
 		if (isClassMember(node) && isPrivateNonStaticMember(node)) {
 			return this.createNewClassMember(node, program);
-		} else if (isAccessExpression(node)) { // tslint:disable-line:unnecessary-else
+		} else if (isAccessExpression(node)) {
 			return this.createNewAccessExpression(node, program);
-		} else if (ts.isBindingElement(node)) { // tslint:disable-line:unnecessary-else
+		} else if (ts.isBindingElement(node)) {
 			return this.createNewBindingElement(node, program);
 		}
 

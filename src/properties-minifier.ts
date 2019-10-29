@@ -48,7 +48,7 @@ export class PropertiesMinifier {
 			return this.createNewAccessExpression(node, program);
 		} else if (ts.isBindingElement(node)) {
 			return this.createNewBindingElement(node, program);
-		} else if (isConstructorParameterRefernece(node, program)) {
+		} else if (isConstructorParameterReference(node, program)) {
 			return this.createNewNode(program, node, ts.createIdentifier);
 		} else if (isConstructorParameter(node) && isPrivateNonStatic(node)) {
 			return this.createNewConstructorParameter(node, program);
@@ -253,7 +253,7 @@ function getClassName(classNode: ts.ClassLikeDeclaration): string {
 	return classNode.name.getText();
 }
 
-function isConstructorParameterRefernece(node: ts.Node, program: ts.Program): node is ts.Identifier {
+function isConstructorParameterReference(node: ts.Node, program: ts.Program): node is ts.Identifier {
 	if (!ts.isIdentifier(node)) {
 		return false;
 	}

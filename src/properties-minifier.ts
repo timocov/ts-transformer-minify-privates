@@ -42,87 +42,15 @@ export class PropertiesMinifier {
 	}
 
 	private visitNode(node: ts.Node, program: ts.Program): ts.Node {
-		if (isClassMember(node) && isPrivateNonStatic(node)) {
-			return this.createNewClassMember(node, program);
-		} else if (isAccessExpression(node)) {
+		if (isAccessExpression(node)) {
 			return this.createNewAccessExpression(node, program);
 		} else if (ts.isBindingElement(node)) {
 			return this.createNewBindingElement(node, program);
 		} else if (isConstructorParameterReference(node, program)) {
 			return this.createNewNode(program, node, ts.createIdentifier);
-		} else if (isConstructorParameter(node) && isPrivateNonStatic(node)) {
-			return this.createNewConstructorParameter(node, program);
 		}
 
 		return node;
-	}
-
-	private createNewConstructorParameter(oldParameter: ts.ParameterDeclaration, program: ts.Program): ts.ParameterDeclaration {
-		if (!ts.isIdentifier(oldParameter.name)) {
-			return oldParameter;
-		}
-
-		return this.createNewNode(
-			program,
-			oldParameter.name,
-			(newName: string) => {
-				return ts.createParameter(
-					oldParameter.decorators,
-					oldParameter.modifiers,
-					oldParameter.dotDotDotToken,
-					newName,
-					oldParameter.questionToken,
-					oldParameter.type,
-					oldParameter.initializer
-				);
-			}
-		);
-	}
-
-	private createNewClassMember(oldMember: ClassMember, program: ts.Program): ClassMember {
-		let creator: NodeCreator<ClassMember>;
-
-		if (ts.isMethodDeclaration(oldMember)) {
-			creator = (newName: string) => {
-				return ts.createMethod(
-					oldMember.decorators,
-					oldMember.modifiers,
-					oldMember.asteriskToken,
-					newName,
-					oldMember.questionToken,
-					oldMember.typeParameters,
-					oldMember.parameters,
-					oldMember.type,
-					oldMember.body
-				);
-			};
-		} else {
-			// don't minify numeric private fields
-			if (ts.isNumericLiteral(oldMember.name)) {
-				return oldMember;
-			}
-
-			if (!ts.isStringLiteral(oldMember.name) && !ts.isIdentifier(oldMember.name)) {
-				throw new Error(`Cannot minify ${getClassName(oldMember.parent)}::${oldMember.name.getText()} property`);
-			}
-
-			creator = (newName: string) => {
-				return ts.createProperty(
-					oldMember.decorators,
-					oldMember.modifiers,
-					newName,
-					oldMember.questionToken || oldMember.exclamationToken,
-					oldMember.type,
-					oldMember.initializer
-				);
-			};
-		}
-
-		return this.createNewNode(
-			program,
-			oldMember.name,
-			creator
-		);
 	}
 
 	private createNewAccessExpression(node: AccessExpression, program: ts.Program): AccessExpression {
@@ -243,14 +171,6 @@ function isClassMember(node: ts.Node): node is ClassMember {
 
 function isConstructorParameter(node: ts.Node): node is ts.ParameterDeclaration {
 	return ts.isParameter(node) && ts.isConstructorDeclaration(node.parent as ts.Node);
-}
-
-function getClassName(classNode: ts.ClassLikeDeclaration): string {
-	if (classNode.name === undefined) {
-		return 'anonymous class';
-	}
-
-	return classNode.name.getText();
 }
 
 function isConstructorParameterReference(node: ts.Node, program: ts.Program): node is ts.Identifier {

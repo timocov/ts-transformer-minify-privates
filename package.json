@@ -27,15 +27,15 @@
     "typescript": ">=2.9.1"
   },
   "devDependencies": {
-    "@types/chai": "~4.1.7",
+    "@types/chai": "~4.2.4",
     "@types/mocha": "~5.2.7",
     "@types/node": "~12.0.4",
     "chai": "~4.2.0",
     "clean-publish": "~1.1.2",
-    "mocha": "~6.1.4",
-    "ts-node": "~8.2.0",
-    "tslint": "~5.18.0",
-    "typescript": "~3.5.1"
+    "mocha": "~6.2.2",
+    "ts-node": "~8.4.1",
+    "tslint": "~5.20.0",
+    "typescript": "~3.6.4"
   },
   "scripts": {
     "tsc": "tsc -p .",

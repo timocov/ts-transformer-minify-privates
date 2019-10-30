@@ -22,7 +22,7 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npm install typescript@3.5.1
+      - run: npm install typescript@3.6.4
       - run: npm run tsc
       - run: npm run lint
       - run: npm run test

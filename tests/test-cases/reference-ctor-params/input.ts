@@ -1,7 +1,7 @@
 export class Class {
-    public constructor(
-        private privateField: number
-    ) {
-        console.log(privateField);
-    }
+	public constructor(
+		private privateField: number
+	) {
+		console.log(privateField);
+	}
 }

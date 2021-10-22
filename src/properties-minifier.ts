@@ -190,6 +190,11 @@ function isPrivateNonStaticClassMember(symbol: ts.Symbol | undefined): boolean {
 	}
 
 	return symbol.declarations.some((x: ts.Declaration) => {
-		return (isClassMember(x) || isConstructorParameter(x)) && isPrivateNonStatic(x);
+		// terser / uglify property minifiers aren't able to handle decorators
+		return (isClassMember(x) && !hasDecorators(x) || isConstructorParameter(x)) && isPrivateNonStatic(x);
 	});
+}
+
+function hasDecorators(node: ts.Node): boolean {
+	return !!node.decorators;
 }

@@ -75,6 +75,7 @@ describe('Functional tests', () => {
 				rootNames: [testCase.inputFileName],
 				options: {
 					target: ts.ScriptTarget.ES5,
+					experimentalDecorators: true,
 				},
 			});
 

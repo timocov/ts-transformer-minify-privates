@@ -154,7 +154,9 @@ function hasPrivateKeyword(node: ClassMember | ts.ParameterDeclaration): boolean
 }
 
 function hasModifier(node: ts.Node, modifier: ts.SyntaxKind): boolean {
-	return node.modifiers !== undefined && node.modifiers.some((mod: ts.Modifier) => mod.kind === modifier);
+	const modifiers = ts.canHaveModifiers(node) ? ts.getModifiers(node): undefined;
+
+	return modifiers !== undefined && modifiers.some((mod: ts.Modifier) => mod.kind === modifier);
 }
 
 type AccessExpression = ts.PropertyAccessExpression | ts.ElementAccessExpression;
@@ -196,5 +198,5 @@ function isPrivateNonStaticClassMember(symbol: ts.Symbol | undefined): boolean {
 }
 
 function hasDecorators(node: ts.Node): boolean {
-	return !!node.decorators;
+	return ts.canHaveDecorators(node) && !!ts.getDecorators(node);
 }

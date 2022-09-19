@@ -1,5 +1,13 @@
 import * as ts from 'typescript';
 
+// decorators and modifiers-related api added in ts 4.8
+interface BreakingTypeScriptApi {
+	canHaveDecorators(node: ts.Node): boolean;
+	getDecorators(node: ts.Node): readonly ts.Decorator[] | undefined;
+	canHaveModifiers(node: ts.Node): boolean;
+	getModifiers(node: ts.Node): readonly ts.Modifier[] | undefined;
+}
+
 export const enum GenerateNameStrategy {
 	PrependPrefixOnly = 'prependPrefixOnly',
 	Random = 'random',
@@ -154,7 +162,9 @@ function hasPrivateKeyword(node: ClassMember | ts.ParameterDeclaration): boolean
 }
 
 function hasModifier(node: ts.Node, modifier: ts.SyntaxKind): boolean {
-	return node.modifiers !== undefined && node.modifiers.some((mod: ts.Modifier) => mod.kind === modifier);
+	const modifiers = getModifiers(node);
+
+	return modifiers !== undefined && modifiers.some((mod: ts.Modifier) => mod.kind === modifier);
 }
 
 type AccessExpression = ts.PropertyAccessExpression | ts.ElementAccessExpression;
@@ -196,5 +206,17 @@ function isPrivateNonStaticClassMember(symbol: ts.Symbol | undefined): boolean {
 }
 
 function hasDecorators(node: ts.Node): boolean {
-	return !!node.decorators;
+	return isBreakingTypeScriptApi(ts) ?
+		ts.canHaveDecorators(node) && !!ts.getDecorators(node) :
+		!!node.decorators;
+}
+
+function getModifiers(node: ts.Node): ts.NodeArray<ts.Modifier> | readonly ts.Modifier[] | undefined {
+	return isBreakingTypeScriptApi(ts) ?
+		ts.canHaveModifiers(node) ? ts.getModifiers(node) : undefined :
+		node.modifiers as ts.NodeArray<ts.Modifier>;
+}
+
+function isBreakingTypeScriptApi(compiler: unknown): compiler is BreakingTypeScriptApi {
+	return 'canHaveDecorators' in ts;
 }

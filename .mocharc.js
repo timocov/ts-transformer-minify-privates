@@ -1,5 +1,7 @@
 'use strict';
 
+process.env.TS_NODE_COMPILER = "ts-compiler";
+
 module.exports = {
 	require: [
 		'ts-node/register',

@@ -7,6 +7,20 @@ on:
   pull_request:
 
 jobs:
+  minimal:
+    name: Test minimal
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - run: npm install
+    - run: npm install typescript@2.9.1
+    - run: npm run tsc
+    - run: npm run test
+
   latest:
     name: Test and lint latest
     runs-on: ubuntu-latest

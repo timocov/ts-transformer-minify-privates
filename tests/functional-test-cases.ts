@@ -43,10 +43,15 @@ function getTestCases(): TestCase[] {
 			assert(fs.existsSync(inputFileName), `Input file doesn't exist for ${directoryName}`);
 			assert(fs.existsSync(outputFileName), `Output file doesn't exist for ${directoryName}`);
 
+			let outputFileContent = prepareString(fs.readFileSync(outputFileName, 'utf-8'));
+			if (parseFloat(ts.versionMajorMinor) < 4) {
+				outputFileContent = outputFileContent.replace(/\nexports\.Class = void 0;\n/g, '\n');
+			}
+
 			const result: TestCase = {
 				name: directoryName,
 				inputFileName,
-				outputFileContent: prepareString(fs.readFileSync(outputFileName, 'utf-8')),
+				outputFileContent,
 			};
 
 			return result;

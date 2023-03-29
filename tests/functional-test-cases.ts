@@ -73,6 +73,44 @@ function checkDiagnosticsErrors(diagnostics: ReadonlyArray<ts.Diagnostic>): void
 	assert.strictEqual(diagnostics.length, 0, ts.formatDiagnostics(diagnostics, formatDiagnosticsHost).trim());
 }
 
+const enum Constants {
+	NoInputsWereFoundDiagnosticCode = 18003,
+}
+
+const parseConfigHost: ts.ParseConfigHost = {
+	useCaseSensitiveFileNames: ts.sys.useCaseSensitiveFileNames,
+	readDirectory: ts.sys.readDirectory,
+	fileExists: ts.sys.fileExists,
+	readFile: ts.sys.readFile,
+};
+
+function getCompilerOptions(configFileName: string): ts.CompilerOptions | null {
+	if (!fs.existsSync(configFileName)) {
+		return null;
+	}
+
+	const configParseResult = ts.readConfigFile(configFileName, ts.sys.readFile);
+
+	checkDiagnosticsErrors(configParseResult.error !== undefined ? [configParseResult.error] : []);
+
+	const compilerOptionsParseResult = ts.parseJsonConfigFileContent(
+		configParseResult.config,
+		parseConfigHost,
+		path.resolve(path.dirname(configFileName)),
+		undefined,
+		configFileName
+	);
+
+	// we don't want to raise an error if no inputs found in a config file
+	// because this error is mostly for CLI, but we'll pass an inputs in createProgram
+	const diagnostics = compilerOptionsParseResult.errors
+		.filter((d: ts.Diagnostic) => d.code !== Constants.NoInputsWereFoundDiagnosticCode);
+
+	checkDiagnosticsErrors(diagnostics);
+
+	return compilerOptionsParseResult.options;
+}
+
 describe('Functional tests', () => {
 	for (const testCase of getTestCases()) {
 		it(testCase.name, () => {
@@ -80,7 +118,7 @@ describe('Functional tests', () => {
 				rootNames: [testCase.inputFileName],
 				options: {
 					target: ts.ScriptTarget.ES5,
-					experimentalDecorators: true,
+					...getCompilerOptions(path.join(testCase.inputFileName, '..', 'tsconfig.json')),
 				},
 			});
 

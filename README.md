@@ -2,6 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/ts-transformer-minify-privates.svg)](https://www.npmjs.com/package/ts-transformer-minify-privates)
 [![CircleCI](https://img.shields.io/circleci/build/github/timocov/ts-transformer-minify-privates.svg)](https://circleci.com/gh/timocov/ts-transformer-minify-privates)
+[![Downloads](https://img.shields.io/npm/dm/ts-transformer-minify-privates.svg)](https://www.npmjs.com/package/ts-transformer-minify-privates)
 
 A TypeScript custom transformer which minify names of private class members.
 

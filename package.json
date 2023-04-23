@@ -24,22 +24,27 @@
   },
   "homepage": "https://github.com/timocov/ts-transformer-minify-privates#readme",
   "peerDependencies": {
-    "typescript": ">=2.9.1"
+    "typescript": ">=4.3.0 || >=5.0.0-beta"
   },
   "devDependencies": {
-    "@types/chai": "~4.1.7",
-    "@types/mocha": "~5.2.7",
-    "@types/node": "~12.0.4",
-    "chai": "~4.2.0",
-    "mocha": "~6.2.2",
-    "ts-compiler": "npm:typescript@4.8.2",
-    "ts-node": "~8.4.1",
-    "tslint": "~5.20.0",
-    "typescript": "~4.8.2"
+    "@types/chai": "~4.3.4",
+    "@types/mocha": "~10.0.1",
+    "@types/node": "~14.18.26",
+    "@typescript-eslint/eslint-plugin": "~5.59.0",
+    "@typescript-eslint/parser": "~5.59.0",
+    "chai": "~4.3.7",
+    "eslint": "~8.39.0",
+    "eslint-plugin-deprecation": "~1.4.1",
+    "eslint-plugin-import": "~2.27.5",
+    "eslint-plugin-unicorn": "~46.0.0",
+    "mocha": "~10.2.0",
+    "ts-compiler": "npm:typescript@5.0.4",
+    "ts-node": "~10.9.1",
+    "typescript": "~5.0.4"
   },
   "scripts": {
     "tsc": "node ./node_modules/ts-compiler/bin/tsc -p .",
-    "lint": "tslint --config tslint.json --project tsconfig.json",
+    "lint": "eslint ./",
     "test": "mocha tests/functional-test-cases.ts"
   }
 }

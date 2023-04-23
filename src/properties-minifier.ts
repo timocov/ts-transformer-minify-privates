@@ -28,9 +28,11 @@ const defaultOptions: PropertyMinifierOptions = {
 type NodeCreator<T extends ts.Node> = (newName: string) => T;
 
 export class PropertiesMinifier {
+	private readonly context: ts.TransformationContext;
 	private readonly options: PropertyMinifierOptions;
 
-	public constructor(options?: Partial<PropertyMinifierOptions>) {
+	public constructor(context: ts.TransformationContext, options?: Partial<PropertyMinifierOptions>) {
+		this.context = context;
 		this.options = { ...defaultOptions, ...options };
 	}
 
@@ -55,7 +57,7 @@ export class PropertiesMinifier {
 		} else if (ts.isBindingElement(node)) {
 			return this.createNewBindingElement(node, program);
 		} else if (isConstructorParameterReference(node, program)) {
-			return this.createNewNode(program, node, ts.createIdentifier);
+			return this.createNewNode(program, node, this.context.factory.createIdentifier);
 		}
 
 		return node;
@@ -77,7 +79,7 @@ export class PropertiesMinifier {
 		if (ts.isPropertyAccessExpression(node)) {
 			propName = node.name;
 			creator = (newName: string) => {
-				return ts.createPropertyAccess(node.expression, newName);
+				return this.context.factory.createPropertyAccessExpression(node.expression, newName);
 			};
 		} else {
 			if (!ts.isStringLiteral(node.argumentExpression)) {
@@ -86,7 +88,7 @@ export class PropertiesMinifier {
 
 			propName = node.argumentExpression;
 			creator = (newName: string) => {
-				return ts.createElementAccess(node.expression, ts.createStringLiteral(newName));
+				return this.context.factory.createElementAccessExpression(node.expression, this.context.factory.createStringLiteral(newName));
 			};
 		}
 
@@ -129,7 +131,7 @@ export class PropertiesMinifier {
 		}
 
 		return this.createNewNode(program, propName, (newName: string) => {
-			return ts.createBindingElement(node.dotDotDotToken, newName, node.name, node.initializer);
+			return this.context.factory.createBindingElement(node.dotDotDotToken, newName, node.name, node.initializer);
 		});
 	}
 
@@ -162,9 +164,7 @@ function hasPrivateKeyword(node: ClassMember | ts.ParameterDeclaration): boolean
 }
 
 function hasModifier(node: ts.Node, modifier: ts.SyntaxKind): boolean {
-	const modifiers = getModifiers(node);
-
-	return modifiers !== undefined && modifiers.some((mod: ts.Modifier) => mod.kind === modifier);
+	return getModifiers(node).some((mod: ts.Modifier) => mod.kind === modifier);
 }
 
 type AccessExpression = ts.PropertyAccessExpression | ts.ElementAccessExpression;
@@ -195,7 +195,7 @@ function isConstructorParameterReference(node: ts.Node, program: ts.Program): no
 
 function isPrivateNonStaticClassMember(symbol: ts.Symbol | undefined): boolean {
 	// for some reason ts.Symbol.declarations can be undefined (for example in order to accessing to proto member)
-	if (symbol === undefined || symbol.declarations === undefined) { // tslint:disable-line:strict-type-predicates
+	if (symbol === undefined || symbol.declarations === undefined) {
 		return false;
 	}
 
@@ -206,15 +206,31 @@ function isPrivateNonStaticClassMember(symbol: ts.Symbol | undefined): boolean {
 }
 
 function hasDecorators(node: ts.Node): boolean {
-	return isBreakingTypeScriptApi(ts) ?
-		ts.canHaveDecorators(node) && !!ts.getDecorators(node) :
-		!!node.decorators;
+	if (isBreakingTypeScriptApi(ts)) {
+		return ts.canHaveDecorators(node) && !!ts.getDecorators(node);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	// eslint-disable-next-line deprecation/deprecation, @typescript-eslint/no-unsafe-return
+	return !!node.decorators;
 }
 
-function getModifiers(node: ts.Node): ts.NodeArray<ts.Modifier> | readonly ts.Modifier[] | undefined {
-	return isBreakingTypeScriptApi(ts) ?
-		ts.canHaveModifiers(node) ? ts.getModifiers(node) : undefined :
-		node.modifiers as ts.NodeArray<ts.Modifier>;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+function getModifiers(node: ts.Node): readonly ts.Modifier[] {
+	if (isBreakingTypeScriptApi(ts)) {
+		if (!ts.canHaveModifiers(node)) {
+			return [];
+		}
+
+		return ts.getModifiers(node) || [];
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	// eslint-disable-next-line deprecation/deprecation, @typescript-eslint/no-unsafe-return
+	return node.modifiers || [];
 }
 
 function isBreakingTypeScriptApi(compiler: unknown): compiler is BreakingTypeScriptApi {

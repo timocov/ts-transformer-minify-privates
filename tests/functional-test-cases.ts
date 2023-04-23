@@ -118,6 +118,7 @@ describe('Functional tests', () => {
 				rootNames: [testCase.inputFileName],
 				options: {
 					target: ts.ScriptTarget.ES5,
+					importHelpers: true,
 					...getCompilerOptions(path.join(testCase.inputFileName, '..', 'tsconfig.json')),
 				},
 			});

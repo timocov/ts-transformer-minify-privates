@@ -1,30 +1,33 @@
 "use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Class = void 0;
-var Class = /** @class */ (function () {
-    function Class() {
-        this.publicField = 123;
-        //@ts-ignore
-        this.privateField = 'string-value';
-        this.privateMethod(this.privateField);
-        this.privateMethod(this.publicField);
-        this['privateMethod'](this.privateField);
-    }
-    //@ts-ignore
-    Class.prototype.privateMethod = function (a) { };
-    __decorate([
-        decorator
-    ], Class.prototype, "privateField", void 0);
-    __decorate([
-        decorator
-    ], Class.prototype, "privateMethod", null);
-    return Class;
-}());
-exports.Class = Class;
+var tslib_1 = require("tslib");
+var Class = exports.Class = function () {
+    var _a;
+    var _instanceExtraInitializers = [];
+    var _privateField_decorators;
+    var _privateField_initializers = [];
+    var _privateMethod_decorators;
+    return _a = /** @class */ (function () {
+            function Class() {
+                this.publicField = (tslib_1.__runInitializers(this, _instanceExtraInitializers), 123);
+                //@ts-ignore
+                this.privateField = tslib_1.__runInitializers(this, _privateField_initializers, 'string-value');
+                this.privateMethod(this.privateField);
+                this.privateMethod(this.publicField);
+                this['privateMethod'](this.privateField);
+            }
+            //@ts-ignore
+            Class.prototype.privateMethod = function (a) { };
+            return Class;
+        }()),
+        (function () {
+            _privateField_decorators = [decorator];
+            _privateMethod_decorators = [decorator];
+            tslib_1.__esDecorate(_a, null, _privateMethod_decorators, { kind: "method", name: "privateMethod", static: false, private: false, access: { has: function (obj) { return "privateMethod" in obj; }, get: function (obj) { return obj.privateMethod; } } }, null, _instanceExtraInitializers);
+            tslib_1.__esDecorate(null, null, _privateField_decorators, { kind: "field", name: "privateField", static: false, private: false, access: { has: function (obj) { return "privateField" in obj; }, get: function (obj) { return obj.privateField; }, set: function (obj, value) { obj.privateField = value; } } }, _privateField_initializers, _instanceExtraInitializers);
+        })(),
+        _a;
+}();
 function decorator(target, propertyKey) { }

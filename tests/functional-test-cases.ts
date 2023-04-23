@@ -69,7 +69,7 @@ function checkProgramDiagnosticsErrors(program: ts.Program): void {
 	checkDiagnosticsErrors(program.getDeclarationDiagnostics());
 }
 
-function checkDiagnosticsErrors(diagnostics: ReadonlyArray<ts.Diagnostic>): void {
+function checkDiagnosticsErrors(diagnostics: readonly ts.Diagnostic[]): void {
 	assert.strictEqual(diagnostics.length, 0, ts.formatDiagnostics(diagnostics, formatDiagnosticsHost).trim());
 }
 

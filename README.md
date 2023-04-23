@@ -21,7 +21,7 @@ I've tested it for several projects and it works well.
 
 ## Requirement
 
-TypeScript >= 2.9.1
+- Make sure that `noImplicitThis` is enabled in your tsconfig.
 
 ## Options
 
